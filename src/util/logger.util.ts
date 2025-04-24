@@ -1,13 +1,13 @@
-import { inspect } from "util";
 import "winston-daily-rotate-file";
+import { join } from "node:path";
+import { inspect } from "node:util";
+import { existsSync, mkdirSync } from "node:fs";
+import DailyRotateFile from "winston-daily-rotate-file";
+import { NODE_ENV } from "../config/environment.config";
 import { ICustomTransformableInfo, LogMeta } from "../type";
 import { ELogLevel } from "../constant/application.constant";
-import winston, { createLogger, format, Logform, transports } from "winston";
-import DailyRotateFile from "winston-daily-rotate-file";
-import { join } from "path";
-import { existsSync, mkdirSync } from "fs";
-import { NODE_ENV } from "../config/environment.config";
 import { ENodeEnvironment } from "../constant/environment.constant";
+import winston, { createLogger, format, Logform, transports } from "winston";
 
 class Logger {
       public readonly logger: winston.Logger;
