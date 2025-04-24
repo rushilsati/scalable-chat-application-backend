@@ -4,8 +4,10 @@ declare global {
                   NODE_ENV: string;
                   PORT?: string;
                   SERVER_URL?: string;
+                  ACCEPTED_ORIGIN?: string;
             }
       }
 }
 
 export {};
+

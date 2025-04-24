@@ -1,5 +1,6 @@
-import { ELogLevel } from "./constant/application.constant";
-import { logger } from "./util/logger.util";
+import { App } from "./app";
 
-logger.log(ELogLevel.INFO, "hello");
+const app: App = new App();
+
+app.listen();
 
