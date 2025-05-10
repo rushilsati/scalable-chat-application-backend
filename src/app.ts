@@ -3,27 +3,28 @@ import helmet from "helmet";
 import express, { Express } from "express";
 import { logger } from "./util/logger.util";
 import { ELogLevel } from "./constant/application.constant";
+import { SocketManager } from "./socket/sockerManager.socket";
 import { createServer, Server as HTTPServer } from "node:http";
 import { ACCEPTED_ORIGIN, PORT, SERVER_URL } from "./config/environment.config";
-import { Server } from "socket.io";
+import { RouteManager } from "./route";
 
 class App {
-      private readonly io: Server;
       private readonly app: Express;
       private readonly server: HTTPServer;
+      private readonly routeManager: RouteManager;
 
       constructor() {
             this.app = express();
             this.server = createServer(this.app);
-            this.io = new Server(this.server, {
-                  cors: {
-                        origin: ACCEPTED_ORIGIN
-                  }
-            });
+
+            new SocketManager(this.server);
+
+            this.routeManager = new RouteManager();
+
             this.initialize();
       }
 
-      private initialize() {
+      private initialize(): void {
             this.app.use(
                   cors({
                         credentials: true,
@@ -32,6 +33,7 @@ class App {
             );
             this.app.use(helmet());
             this.app.use(express.json({ limit: "5MB" }));
+            this.app.use(this.routeManager.router);
       }
 
       public listen(): void {

@@ -14,9 +14,6 @@ class Logger {
 
       constructor() {
             this.logger = createLogger({
-                  defaultMeta: {
-                        meta: {}
-                  },
                   transports: [...this.createCustomConsoleTransport(), ...this.createCustomFileTransport()]
             });
       }
