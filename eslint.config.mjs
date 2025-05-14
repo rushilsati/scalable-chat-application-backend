@@ -20,6 +20,7 @@ export default [
                   }
             },
             rules: {
+                  "require-await": "off",
                   "no-console": "error",
                   "no-useless-catch": "off",
                   "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: false }],

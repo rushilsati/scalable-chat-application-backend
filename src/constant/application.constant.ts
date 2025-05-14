@@ -5,12 +5,29 @@ export enum ELogLevel {
       ERROR = "error"
 }
 
+export enum EMediaType {
+      IMAGE = "image",
+      VIDEO = "video",
+      NONE = "none"
+}
+
 export enum ESocketEvent {
       CONNECTION = "connection",
       MATCH_REQUEST = "match_request",
       MATCH_FOUND = "match_found",
-      MESSAGE = "message",
+      INDIVIDUAL_MESSAGE = "individual_message",
+      NULL = "null",
       DISCONNECT = "disconnect"
+}
+
+export enum EMessageType {
+      MATCH_FOUND_MESSAGE = "match_found_message",
+      INDIVIDUAL_MESSAGE = "individual_message",
+      GROUP_CHAT_MESSAGE = "group_chat_message"
+}
+
+export enum EKafkaTopic {
+      MESSAGE = "message"
 }
 
 export enum EStatusCode {

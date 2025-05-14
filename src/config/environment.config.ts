@@ -19,5 +19,22 @@ const REDIS_DATABASE_USERNAME: string = process.env.REDIS_DATABASE_USERNAME || "
 
 const REDIS_DATABASE_PASSWORD: string = process.env.REDIS_DATABASE_PASSWORD || "";
 
-export { PORT, SERVER_URL, NODE_ENV, ACCEPTED_ORIGIN, REDIS_DATABASE_URL, REDIS_DATABASE_USERNAME, REDIS_DATABASE_PASSWORD };
+const KAFKA_CLIENT_ID: string = process.env.KAFKA_CLIENT_ID || "scalable-chat-application-backend";
+
+const KAFKA_BROKERS: Array<string> = (process.env.KAFKA_BROKERS || "localhost:9092").split(",");
+
+const KAFKA_GROUP_ID: string = process.env.KAFKA_GROUP_ID || "scalable-chat-application-backend-1";
+
+export {
+      PORT,
+      SERVER_URL,
+      NODE_ENV,
+      ACCEPTED_ORIGIN,
+      REDIS_DATABASE_URL,
+      REDIS_DATABASE_USERNAME,
+      REDIS_DATABASE_PASSWORD,
+      KAFKA_CLIENT_ID,
+      KAFKA_BROKERS,
+      KAFKA_GROUP_ID
+};
 

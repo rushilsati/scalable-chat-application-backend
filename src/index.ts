@@ -9,7 +9,7 @@ redis.connect()
             app.listen();
       })
       .catch((error: unknown) => {
-            logger.log(ELogLevel.ERROR, "ERROR WHILE CONNECTING TO REDIS", { error });
+            logger.log(ELogLevel.ERROR, "ERROR OCCURED WHILE STARTING THE APP", { error });
             process.exit(1);
       });
 
