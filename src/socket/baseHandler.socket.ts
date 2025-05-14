@@ -1,16 +1,15 @@
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 
 abstract class BaseHandler {
       protected readonly io: Server;
-      protected readonly socket: Socket;
 
-      constructor(io: Server, socket: Socket) {
+      constructor(io: Server) {
             this.io = io;
-            this.socket = socket;
-            this.setup();
+
+            this.initialize();
       }
 
-      protected abstract setup(): void;
+      protected abstract initialize(): void;
 }
 
 export { BaseHandler };

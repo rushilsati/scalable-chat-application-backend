@@ -7,6 +7,7 @@ import { ACCEPTED_ORIGIN } from "../config/environment.config";
 
 class SocketManager {
       private readonly io: Server;
+      private readonly chatHandler: ChatHandler;
 
       constructor(server: HTTPServer) {
             this.io = new Server(server, {
@@ -15,13 +16,15 @@ class SocketManager {
                   }
             });
 
+            this.chatHandler = new ChatHandler(this.io);
+
             this.io.on(ESocketEvent.CONNECTION, this.registerHandler.bind(this));
       }
 
       private registerHandler(socket: Socket) {
             logger.log(ELogLevel.INFO, `USER CONNECTED : ${socket.id}`);
 
-            new ChatHandler(this.io, socket);
+            this.chatHandler.listen(socket);
       }
 }
 

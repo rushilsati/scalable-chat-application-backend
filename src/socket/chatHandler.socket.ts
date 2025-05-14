@@ -1,40 +1,64 @@
 import { Server, Socket } from "socket.io";
-import { BaseHandler } from "./baseHandler.socket";
-import { ELogLevel, ESocketEvent } from "../constant/application.constant";
-import { THandleMatchRequestArgs, TMatchedUser } from "../type";
-import { ChatService } from "../service/chat.service";
 import { logger } from "../util/logger.util";
+import { BaseHandler } from "./baseHandler.socket";
+import { ChatService } from "../service/chat.service";
+import { THandleMatchRequestArgs, TMatchedUser, TIndividualMessagePayload } from "../type";
+import { ELogLevel, ESocketEvent } from "../constant/application.constant";
+import { messageProducer } from "../kafka/producer/message.producer";
+import { messageConsumer } from "../kafka/consumer/message.consumer";
 
 class ChatHandler extends BaseHandler {
       private readonly chatService: ChatService;
 
-      constructor(io: Server, socket: Socket) {
-            super(io, socket);
+      constructor(io: Server) {
+            super(io);
 
             this.chatService = new ChatService();
       }
 
-      protected override setup(): void {
-            this.socket.on(ESocketEvent.MATCH_REQUEST, this.handleMatchRequest.bind(this));
+      protected override async initialize(): Promise<void> {
+            //Kafka initilization
+            await this.initializeMessageConsumer();
+            await this.initializeMessageProducer();
       }
 
-      private async handleMatchRequest(data: THandleMatchRequestArgs): Promise<void> {
-            logger.log(ELogLevel.INFO, `USER - ${this.socket.id} EMITTED - ${ESocketEvent.MATCH_REQUEST}`, data);
+      public listen(socket: Socket): void {
+            socket.on(ESocketEvent.MATCH_REQUEST, (data: THandleMatchRequestArgs): Promise<void> => this.handleMatchRequest(socket, data));
+            socket.on(ESocketEvent.INDIVIDUAL_MESSAGE, this.handleIndividualMessage.bind(this));
+      }
+
+      private async handleMatchRequest(socket: Socket, data: THandleMatchRequestArgs): Promise<void> {
+            logger.log(ELogLevel.INFO, `USER - ${socket.id} EMITTED - ${ESocketEvent.MATCH_REQUEST}`, data);
 
             const { name, interests } = data;
 
-            const matchedUser: TMatchedUser | null = await this.chatService.matchUser(this.socket.id, name, interests);
-
+            const matchedUser: TMatchedUser | null = await this.chatService.matchUser(socket.id, name, interests);
             if (matchedUser !== null) {
                   const commonInterests: Array<string> = interests.filter((interest: string): boolean => matchedUser.interests.includes(interest));
 
-                  this.socket.emit(ESocketEvent.MATCH_FOUND, { id: matchedUser.id, name: matchedUser.name, commonInterests });
-                  this.io.to(matchedUser.id).emit(ESocketEvent.MATCH_FOUND, { id: this.socket.id, name, commonInterests });
+                  await messageProducer.publishMatchFound({
+                        user1: { id: socket.id, name: name },
+                        user2: { id: matchedUser.id, name: matchedUser.name },
+                        commonInterests
+                  });
 
-                  logger.log(ELogLevel.INFO, `SERVER EMITTED - ${ESocketEvent.MATCH_FOUND} FOR - ${this.socket.id} and ${matchedUser.id}`, {
+                  logger.log(ELogLevel.INFO, `SERVER EMITTED - ${ESocketEvent.MATCH_FOUND} FOR - ${socket.id} and ${matchedUser.id}`, {
                         commonInterests
                   });
             }
+      }
+
+      private async handleIndividualMessage(data: TIndividualMessagePayload): Promise<void> {
+            await messageProducer.publishIndividualMessage(data);
+      }
+
+      private async initializeMessageConsumer(): Promise<void> {
+            await messageConsumer.subscribe();
+            await messageConsumer.run(this.io);
+      }
+
+      private async initializeMessageProducer(): Promise<void> {
+            await messageProducer.connect();
       }
 }
 
