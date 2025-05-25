@@ -2,7 +2,7 @@ import { Producer } from "kafkajs";
 import { EKafkaTopic, ELogLevel, EMessageType } from "../../constant/application.constant";
 import { logger } from "../../util/logger.util";
 import { KafkaConfig } from "../config/kafka.config";
-import { TIndividualMessagePayload, TMatchFoundPayload } from "../../type";
+import { TChatMessage, TDisconnectionMessage, TMatchFoundPayload } from "../../type";
 
 class MessageProducer {
       private readonly producer: Producer;
@@ -41,7 +41,23 @@ class MessageProducer {
             }
       }
 
-      public async publishIndividualMessage(message: TIndividualMessagePayload): Promise<void> {
+      public async publishDisconnectMessage(message: TDisconnectionMessage): Promise<void> {
+            try {
+                  await this.producer.send({
+                        topic: EKafkaTopic.MESSAGE,
+                        messages: [
+                              {
+                                    key: EMessageType.DICONNECT_MESSAGE,
+                                    value: JSON.stringify(message)
+                              }
+                        ]
+                  });
+            } catch (error: unknown) {
+                  logger.log(ELogLevel.ERROR, `ERROR - MESSAGE PRODUCER UNABLE TO SEND EVENT TO TOPIC ${EKafkaTopic.MESSAGE}`, { message, error });
+            }
+      }
+
+      public async publishIndividualMessage(message: TChatMessage): Promise<void> {
             try {
                   await this.producer.send({
                         topic: EKafkaTopic.MESSAGE,

@@ -12,18 +12,37 @@ export enum EMediaType {
 }
 
 export enum ESocketEvent {
-      CONNECTION = "connection",
-      MATCH_REQUEST = "match_request",
-      MATCH_FOUND = "match_found",
-      INDIVIDUAL_MESSAGE = "individual_message",
       NULL = "null",
-      DISCONNECT = "disconnect"
+      DISCONNECT = "disconnect",
+      CONNECTION = "connection",
+      MATCH_FOUND = "match_found",
+      MATCH_REQUEST = "match_request",
+      USER_DISCONNECTED = "user_disconnected",
+      INDIVIDUAL_MESSAGE = "individual_message"
+}
+
+export enum ERedisConstants {
+      ID = "id",
+      NAME = "name",
+      USER = "user",
+      INTEREST = "interest",
+      GROUP_ID = "group_id",
+      INTERESTS = "interests",
+      PARTNER_ID = "partner_id",
+      USER_STATE = "user_state"
+}
+
+export enum EUserState {
+      WAITING = "waiting",
+      INDIVIDUAL_CHAT = "individual_chat",
+      GROUP_CHAT = "group_chat"
 }
 
 export enum EMessageType {
       MATCH_FOUND_MESSAGE = "match_found_message",
       INDIVIDUAL_MESSAGE = "individual_message",
-      GROUP_CHAT_MESSAGE = "group_chat_message"
+      GROUP_CHAT_MESSAGE = "group_chat_message",
+      DICONNECT_MESSAGE = "disconnection_message"
 }
 
 export enum EKafkaTopic {

@@ -4,7 +4,7 @@ import { EKafkaTopic, ELogLevel, EMessageType, ESocketEvent } from "../../consta
 import { KAFKA_GROUP_ID } from "../../config/environment.config";
 import { logger } from "../../util/logger.util";
 import { Server } from "socket.io";
-import { TIndividualMessagePayload, TMatchFoundPayload } from "../../type";
+import { TChatMessage, TDisconnectionMessage, TMatchFoundMessage, TMatchFoundPayload } from "../../type";
 
 class MessageConsumer {
       private readonly messageConsumer: Consumer;
@@ -26,7 +26,7 @@ class MessageConsumer {
             }
       }
 
-      private consumeIndividualMessage(io: Server, message: TIndividualMessagePayload): void {
+      private consumeIndividualMessage(io: Server, message: TChatMessage): void {
             io.to(message.to).emit(ESocketEvent.INDIVIDUAL_MESSAGE, message);
             logger.log(ELogLevel.INFO, `MESSAGE EVENT OF TYPE ${EMessageType.INDIVIDUAL_MESSAGE} RECEIVED`, { message });
       }
@@ -36,7 +36,7 @@ class MessageConsumer {
                   id: message.user2.id,
                   name: message.user2.name,
                   commonInterests: message.commonInterests
-            });
+            } as TMatchFoundMessage);
 
             io.to(message.user2.id).emit(ESocketEvent.MATCH_FOUND, {
                   id: message.user1.id,
@@ -48,6 +48,12 @@ class MessageConsumer {
       }
 
       private consumeGroupChatMessage(): void {}
+
+      private consumeDisconnectionMessage(io: Server, message: TDisconnectionMessage): void {
+            io.to(message.to).emit(ESocketEvent.USER_DISCONNECTED, { id: message.from });
+
+            logger.log(ELogLevel.INFO, `MESSAGE EVENT OF TYPE ${EMessageType.DICONNECT_MESSAGE} RECEIVED`, { message });
+      }
 
       public async run(io: Server): Promise<void> {
             try {
@@ -64,14 +70,16 @@ class MessageConsumer {
 
                               switch (key as EMessageType) {
                                     case EMessageType.MATCH_FOUND_MESSAGE:
-                                          logger.log(ELogLevel.ERROR, `123`);
                                           return this.consumeMatchFoundMessage(io, data as TMatchFoundPayload);
 
                                     case EMessageType.INDIVIDUAL_MESSAGE:
-                                          return this.consumeIndividualMessage(io, data as TIndividualMessagePayload);
+                                          return this.consumeIndividualMessage(io, data as TChatMessage);
 
                                     case EMessageType.GROUP_CHAT_MESSAGE:
                                           return this.consumeGroupChatMessage();
+
+                                    case EMessageType.DICONNECT_MESSAGE:
+                                          return this.consumeDisconnectionMessage(io, data as TDisconnectionMessage);
 
                                     default:
                                           return;

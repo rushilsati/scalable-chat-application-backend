@@ -32,12 +32,25 @@ export type TMatchFoundPayload = {
       commonInterests: Array<string>;
 };
 
-export type TIndividualMessagePayload = {
+export type TMatchFoundMessage = {
+      id: string;
+      name: string;
+      commonInterests: Array<string>;
+};
+
+export type TChatMessage = {
       to: string;
       from: string;
       message: string;
+      isReply: false;
+      replyTo: string;
       media: boolean;
       mediaType: EMediaType;
       mediaURL: string;
+};
+
+export type TDisconnectionMessage = {
+      to: string;
+      from: string;
 };
 

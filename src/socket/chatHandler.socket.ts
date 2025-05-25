@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { logger } from "../util/logger.util";
 import { BaseHandler } from "./baseHandler.socket";
 import { ChatService } from "../service/chat.service";
-import { THandleMatchRequestArgs, TMatchedUser, TIndividualMessagePayload } from "../type";
+import { TChatMessage, THandleMatchRequestArgs, TMatchedUser } from "../type";
 import { ELogLevel, ESocketEvent } from "../constant/application.constant";
 import { messageProducer } from "../kafka/producer/message.producer";
 import { messageConsumer } from "../kafka/consumer/message.consumer";
@@ -25,6 +25,7 @@ class ChatHandler extends BaseHandler {
       public listen(socket: Socket): void {
             socket.on(ESocketEvent.MATCH_REQUEST, (data: THandleMatchRequestArgs): Promise<void> => this.handleMatchRequest(socket, data));
             socket.on(ESocketEvent.INDIVIDUAL_MESSAGE, this.handleIndividualMessage.bind(this));
+            socket.on(ESocketEvent.DISCONNECT, (): Promise<void> => this.handleDisconnect(socket));
       }
 
       private async handleMatchRequest(socket: Socket, data: THandleMatchRequestArgs): Promise<void> {
@@ -48,8 +49,15 @@ class ChatHandler extends BaseHandler {
             }
       }
 
-      private async handleIndividualMessage(data: TIndividualMessagePayload): Promise<void> {
+      private async handleIndividualMessage(data: TChatMessage): Promise<void> {
             await messageProducer.publishIndividualMessage(data);
+      }
+
+      private async handleDisconnect(socket: Socket): Promise<void> {
+            const to: string | null = await this.chatService.disconnectUser(socket.id);
+            if (to) await messageProducer.publishDisconnectMessage({ to, from: socket.id });
+
+            logger.log(ELogLevel.INFO, `USER - ${socket.id} GOT DISCONNECTED`, { to });
       }
 
       private async initializeMessageConsumer(): Promise<void> {
