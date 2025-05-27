@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
+import { NextFunction, Request, Response } from "express";
 
 const validate = <T extends z.ZodTypeAny>(schema: T) => {
       return (req: Request<unknown, unknown, z.infer<T>>, _res: Response, next: NextFunction) => {

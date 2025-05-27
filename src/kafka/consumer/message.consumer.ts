@@ -1,10 +1,10 @@
+import { Server } from "socket.io";
+import { logger } from "../../util/logger.util";
 import { Consumer, EachMessagePayload } from "kafkajs";
 import { KafkaConfig } from "../config/kafka.config";
-import { EKafkaTopic, ELogLevel, EMessageType, ESocketEvent } from "../../constant/application.constant";
 import { KAFKA_GROUP_ID } from "../../config/environment.config";
-import { logger } from "../../util/logger.util";
-import { Server } from "socket.io";
 import { TChatMessage, TDisconnectionMessage, TMatchFoundMessage, TMatchFoundPayload } from "../../type";
+import { EKafkaTopic, ELogLevel, EMessageType, ESocketEvent } from "../../constant/application.constant";
 
 class MessageConsumer {
       private readonly messageConsumer: Consumer;

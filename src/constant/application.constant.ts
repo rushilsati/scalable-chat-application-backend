@@ -49,6 +49,11 @@ export enum EKafkaTopic {
       MESSAGE = "message"
 }
 
+export enum EFolder {
+      IMAGE = "image",
+      VIDEO = "video"
+}
+
 export enum EStatusCode {
       CONTINUE = 100,
       SWITCHING_PROTOCOLS = 101,

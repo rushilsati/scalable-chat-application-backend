@@ -1,5 +1,7 @@
-import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
 import { Logform } from "winston";
+import { fileUploadSchema } from "../schema";
+import { NextFunction, Request, Response } from "express";
 import { EMediaType } from "../constant/application.constant";
 
 export interface LogMeta {
@@ -52,5 +54,20 @@ export type TChatMessage = {
 export type TDisconnectionMessage = {
       to: string;
       from: string;
+};
+
+export type TFileUploadSchema = z.infer<typeof fileUploadSchema>;
+
+export type TFileUploadResponseData = {
+      apiKey: string;
+      cloudName: string;
+      public_id: string;
+      timestamp: number;
+      signature: string;
+};
+
+export type TCloudinaryGetSignatureReturn = {
+      timestamp: number;
+      signature: string;
 };
 

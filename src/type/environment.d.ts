@@ -11,6 +11,9 @@ declare global {
                   KAFKA_CLIENT_ID?: string;
                   KAFKA_BROKERS?: string;
                   KAFKA_GROUP_ID?: string;
+                  CLOUDINARY_CLOUD_NAME?: string;
+                  CLOUDINARY_API_KEY?: string;
+                  CLOUDINARY_API_SECRET?: string;
             }
       }
 }

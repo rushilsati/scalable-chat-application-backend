@@ -2,10 +2,10 @@ import { Server, Socket } from "socket.io";
 import { logger } from "../util/logger.util";
 import { BaseHandler } from "./baseHandler.socket";
 import { ChatService } from "../service/chat.service";
-import { TChatMessage, THandleMatchRequestArgs, TMatchedUser } from "../type";
-import { ELogLevel, ESocketEvent } from "../constant/application.constant";
 import { messageProducer } from "../kafka/producer/message.producer";
 import { messageConsumer } from "../kafka/consumer/message.consumer";
+import { ELogLevel, ESocketEvent } from "../constant/application.constant";
+import { TChatMessage, THandleMatchRequestArgs, TMatchedUser } from "../type";
 
 class ChatHandler extends BaseHandler {
       private readonly chatService: ChatService;
