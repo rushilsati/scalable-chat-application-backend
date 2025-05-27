@@ -1,7 +1,7 @@
 import { Producer } from "kafkajs";
-import { EKafkaTopic, ELogLevel, EMessageType } from "../../constant/application.constant";
 import { logger } from "../../util/logger.util";
 import { KafkaConfig } from "../config/kafka.config";
+import { EKafkaTopic, ELogLevel, EMessageType } from "../../constant/application.constant";
 import { TChatMessage, TDisconnectionMessage, TMatchFoundPayload } from "../../type";
 
 class MessageProducer {

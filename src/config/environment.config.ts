@@ -25,6 +25,12 @@ const KAFKA_BROKERS: Array<string> = (process.env.KAFKA_BROKERS || "localhost:90
 
 const KAFKA_GROUP_ID: string = process.env.KAFKA_GROUP_ID || "scalable-chat-application-backend-1";
 
+const CLOUDINARY_CLOUD_NAME: string = process.env.CLOUDINARY_CLOUD_NAME || "";
+
+const CLOUDINARY_API_KEY: string = process.env.CLOUDINARY_API_KEY || "";
+
+const CLOUDINARY_API_SECRET: string = process.env.CLOUDINARY_API_SECRET || "";
+
 export {
       PORT,
       SERVER_URL,
@@ -35,6 +41,9 @@ export {
       REDIS_DATABASE_PASSWORD,
       KAFKA_CLIENT_ID,
       KAFKA_BROKERS,
-      KAFKA_GROUP_ID
+      KAFKA_GROUP_ID,
+      CLOUDINARY_CLOUD_NAME,
+      CLOUDINARY_API_KEY,
+      CLOUDINARY_API_SECRET
 };
 
